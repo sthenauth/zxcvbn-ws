@@ -1,0 +1,56 @@
+cabal-version: 2.2
+
+--------------------------------------------------------------------------------
+name:          zxcvbn-ws
+version:       0.1.0.0
+synopsis:      Web Socket server for measuring password strength.
+description:   Please see the README below.
+license:       MIT
+license-file:  LICENSE
+author:        Peter Jones <pjones@devalot.com>
+maintainer:    Peter Jones <pjones@devalot.com>
+copyright:     Copyright (c) 2019 Peter Jones
+category:      Web
+--bug-reports:
+
+--------------------------------------------------------------------------------
+extra-source-files:
+  CHANGELOG.md
+
+--------------------------------------------------------------------------------
+-- Files needed at run time.
+data-files:
+  www/index.html
+  www/zxcvbn.js
+
+--------------------------------------------------------------------------------
+common options
+  default-language: Haskell2010
+  ghc-options: -Wall
+               -Werror=incomplete-record-updates
+               -Werror=incomplete-uni-patterns
+               -Werror=missing-home-modules
+               -Widentities
+               -Wmissing-export-lists
+               -Wredundant-constraints
+
+--------------------------------------------------------------------------------
+common dependencies
+  build-depends: base               >= 4.9  && < 5.0
+               , aeson              >= 1.3  && < 1.5
+               , filepath           >= 1.4  && < 1.5
+               , servant            >= 0.15 && < 0.17
+               , servant-server     >= 0.15 && < 0.17
+               , servant-websockets >= 1.1  && < 1.2
+               , text               >= 1.2  && < 1.3
+               , time               >= 1.8  && < 1.9
+               , warp               >= 3.2  && < 3.3
+               , websockets         >= 0.12 && < 0.13
+               , zxcvbn-hs          >= 0.1  && < 0.2
+
+--------------------------------------------------------------------------------
+executable zxcvbn-ws
+  import: options, dependencies
+  main-is: Main.hs
+  hs-source-dirs: src
+  other-modules: Paths_zxcvbn_ws
