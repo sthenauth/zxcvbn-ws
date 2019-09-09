@@ -65,9 +65,8 @@ data Response = Response
   , strength :: Int
     -- ^ Numeric strength ranges from 0 to @possible@.
 
-  , possible :: Int
-    -- ^ Maximum possible strength.  Useful to gauge the @strength@
-    -- value against.
+  , percent :: Double
+    -- ^ Strength as a value between 0.0 and 1.0.
 
   } deriving (Generic, ToJSON)
 
@@ -116,13 +115,16 @@ handler connection = do
   where
     -- Score a password and generate a response.  Only score the first
     -- 100 characters of the password to keep this running fast.
+    --
     go :: Day -> Request -> Response
     go day Request{..} =
       let score' = Zxcvbn.score Zxcvbn.en_US day (Text.take 100 password)
           score  = Zxcvbn.strength score'
+          numerator = realToFrac (fromEnum score)
+          denominator = realToFrac . fromEnum $ (maxBound :: Zxcvbn.Strength)
       in Response { description = Text.pack (show score)
                   , strength    = fromEnum score
-                  , possible    = fromEnum (maxBound :: Zxcvbn.Strength)
+                  , percent     = numerator / denominator
                   }
 
     -- Send a response to the client.
