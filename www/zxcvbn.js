@@ -49,41 +49,10 @@ class PasswordWithStrength extends HTMLElement {
     // YUCK!
     shadowRoot.innerHTML = `
       <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-
-      section {
-        margin: 0em auto 0;
-        width: 30em;
-      }
-
-      input {
-        margin: 0 auto 0;
-        width: 100%;
-      }
-
-      meter {
-        margin: 0 auto 1em;
-        width: 100%;
-        height: 0.25em;
-        background: none;
-        background-color: rgba(0, 0, 0, 0.1);
-        border: none;
-      }
-
-      meter::-webkit-meter-bar {
-        background: none;
-        background-color: rgba(0, 0, 0, 0.1);
-      }
-
-      meter[value="1"]::-webkit-meter-optimum-value { background: red; }
-      meter[value="2"]::-webkit-meter-optimum-value { background: orange; }
-      meter[value="3"]::-webkit-meter-optimum-value { background: yellow; }
-      meter[value="4"]::-webkit-meter-optimum-value { background: green; }
-
-      meter[value="1"]::-moz-meter-bar { background: red; }
-      meter[value="2"]::-moz-meter-bar { background: orange; }
-      meter[value="3"]::-moz-meter-bar { background: yellow; }
-      meter[value="4"]::-moz-meter-bar { background: green; }
+      * {box-sizing: border-box; margin: 0; padding: 0;}
+      section {margin: 0em auto 0; width: 30em;}
+      input {margin: 0 auto 0; width: 100%;}
+      meter {margin: 0 auto 1em; width: 100%; height: 0.25em;}
       </style>
     `;
 
@@ -97,17 +66,21 @@ class PasswordWithStrength extends HTMLElement {
 
     const meter = document.createElement("meter");
     meter.max = 4;
+    meter.low = 1;
+    meter.high = 3;
+    meter.optimum = 4;
     section.appendChild(meter);
 
-    const update = result => {
-      console.log("Result:", result);
+    const debug = document.createElement("code");
+    section.appendChild(debug);
 
+    const update = result => {
       if (result) {
-        meter.max = result.possible;
         meter.value = result.strength;
-        meter.textContent = result.description;
+        debug.textContent = JSON.stringify(result);
       } else {
         meter.value = null;
+        debug.textContent = "";
       }
     };
 
